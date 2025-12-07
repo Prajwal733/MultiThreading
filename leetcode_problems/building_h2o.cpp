@@ -4,6 +4,8 @@
 #include <thread>
 #include <condition_variable>
 #include <vector>
+#include <barrier>
+#include <latch>
 
 using std::function;
 
@@ -25,6 +27,7 @@ private:
     Molecule current_;
     std::mutex current_mutex_;
     std::condition_variable current_notify_;
+    std::barrier sync(3);
 
     void CheckAndResetMolecule() {
         if (current_.hydrogen == 2 and current_.oxygen == 1) {
@@ -42,6 +45,8 @@ public:
         current_notify_.wait(lck, [&] {
             return current_.hydrogen < 2;
         });
+
+        sync.arrive_and_wait();
         // releaseHydrogen() outputs "H". Do not change or remove this line.
         releaseHydrogen();
         current_.hydrogen++;
@@ -57,6 +62,8 @@ public:
         current_notify_.wait(lck, [&] {
             return current_.oxygen < 1;
         });
+
+        sync.arrive_and_wait();
         // releaseOxygen() outputs "O". Do not change or remove this line.
         releaseOxygen();
         current_.oxygen = 1;
