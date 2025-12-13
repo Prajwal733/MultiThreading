@@ -3,6 +3,13 @@
 #include <atomic>
 #include <vector>
 
+/*
+std::chrono::stready_clock::now()
+
+std::chrono::duration<double, milli> es = t2 - t1;
+es.count();
+
+*/
 std::atomic<int> counter;
 
 void IncrementCounter(int times) {
